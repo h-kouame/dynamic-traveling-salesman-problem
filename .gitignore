@@ -1,1 +1,6 @@
 README
+*.class
+*.classpath
+*.project
+../bin/
+/bin/
