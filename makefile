@@ -1,6 +1,5 @@
 SRCDIR = src
 BINDIR = bin
-DOCDIR = doc
 
 JC = javac
 JFLAGS = -g -d $(BINDIR) -cp $(BINDIR)
@@ -20,4 +19,4 @@ default: classes
 classes: $(CLASSES:.java=.class)
 	
 clean:
-	$(RM) $(BINDIR)/*.class $(BINDIR)/*.out
+	$(RM) $(BINDIR)/*.class

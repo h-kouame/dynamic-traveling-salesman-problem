@@ -24,7 +24,7 @@ public final class TSP {
    protected static int populationSize = 100; //DO NOT CHANGE THIS.
 
    /**
-    * The part of the population eligable for mating.
+    * The part of the population eligible for mating.
     */
    protected static int matingPopulationSize;
 
@@ -82,7 +82,7 @@ public final class TSP {
     * Writing to an output file with the costs.
     */
    private static void writeLog(String content) {
-      String filename = "results.out";
+      String filename = "output/results.out";
       FileWriter out;
    
       try {
@@ -273,7 +273,7 @@ public final class TSP {
             sum = 0;
             
             String currentWorkingDirectory = Paths.get(".").toAbsolutePath().normalize().toString();
-            originalCities = cities = LoadCitiesFromFile(currentWorkingDirectory+"/"+"CityList.txt", cities);
+            originalCities = cities = LoadCitiesFromFile(currentWorkingDirectory+"/"+"data/CityList.txt", cities);
          
             writeLog("Run Stats for experiment at: " + currentTime);
             for (int y = 1; y <= runs; y++) {
