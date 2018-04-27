@@ -309,23 +309,13 @@ class Evolution{
    public static Chromosome [] Evolve(Chromosome [] population, City [] cityList){
       Chromosome [] parents = SelectParents(population);
       Chromosome [] newPopulation = new Chromosome [population.length];
-      if (IsMutation()) {
-    	  for (int i = 0; i < population.length; i +=2){
-    		  Chromosome parent = new Chromosome(cityList);
-    		  parent.setCities(parents[i/2].getCities());
-        	  newPopulation[i] = Mutate(parent, cityList);
-        	  parent = new Chromosome(cityList);
-    		  parent.setCities(parents[i/2].getCities());
-        	  newPopulation[i + 1] = Mutate(parent, cityList);
-          }
-      }
-      else {
-    	  for (int i = 0; i < population.length; i +=2){
-    		  Chromosome parent1 = parents[i/2];
-    		  Chromosome parent2 = parents[parents.length - i/2 -1];
-        	  newPopulation[i] = CrossoverRight(parent1, parent2, cityList);
-        	  newPopulation[i + 1] = CrossoverLeft(parent1, parent2, cityList);
-          }
+	  for (int i = 0; i < population.length; i +=2){
+		  Chromosome parent1 = parents[i/2];
+		  Chromosome parent2 = parents[parents.length - i/2 -1];
+    	  Chromosome offspring1 = CrossoverRight(parent1, parent2, cityList);
+    	  Chromosome offspring2 = CrossoverLeft(parent1, parent2, cityList);
+		  newPopulation[i] = Mutate(offspring1, cityList);
+		  newPopulation[i + 1] = Mutate(offspring2, cityList);
       }
       return newPopulation;
    }
