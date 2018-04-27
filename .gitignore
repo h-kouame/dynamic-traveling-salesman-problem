@@ -5,3 +5,4 @@ README
 ../bin/
 /bin/
 .metadata/
+/output/results.out

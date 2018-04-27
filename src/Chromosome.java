@@ -15,7 +15,7 @@ final class Chromosome {
     protected double cost;
     
     /**
-     * Stores extra data about Chromosome needed for advaned mutations
+     * Stores extra data about Chromosome needed for advanced mutations
      * and crossovers
      */
     protected HashMap<String, Object> metaData = new HashMap<>();
@@ -150,8 +150,6 @@ final class Chromosome {
      */
 	public HashMap<String, Object> getMetaData() {
 		return metaData;
-	}
-    
-    
+	}  
     
 }
