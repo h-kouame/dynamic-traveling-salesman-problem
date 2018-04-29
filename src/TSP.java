@@ -1,16 +1,11 @@
-import java.applet.Applet;
 import java.awt.*;
-import java.awt.event.*;
 import java.io.*;
 import java.nio.file.Paths;
-import java.sql.Time;
 import java.text.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
-import java.util.Arrays;
 import java.util.ArrayList;
-import java.awt.*; 
 
 import javax.swing.*;
 
@@ -29,7 +24,7 @@ public final class TSP {
    protected static int populationSize = 100; //DO NOT CHANGE THIS.
 
    /**
-    * The part of the population eligable for mating.
+    * The part of the population eligible for mating.
     */
    protected static int matingPopulationSize;
 
@@ -87,7 +82,7 @@ public final class TSP {
     * Writing to an output file with the costs.
     */
    private static void writeLog(String content) {
-      String filename = "results.out";
+      String filename = "output/results.out";
       FileWriter out;
    
       try {
@@ -122,7 +117,7 @@ public final class TSP {
    public static void updateGUI() {
       Image img = frame.createImage(width, height);
       Graphics g = img.getGraphics();
-      FontMetrics fm = g.getFontMetrics();
+     // FontMetrics fm = g.getFontMetrics();
    
       g.setColor(Color.black);
       g.fillRect(0, 0, width, height);
@@ -256,7 +251,6 @@ public final class TSP {
             if(display) {
                frame = new JFrame("Traveling Salesman");
                statsArea = new Panel();
-            https://marketplace.eclipse.org/content/tm-terminal
                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                frame.pack();
                frame.setSize(width + 300, height);
@@ -279,7 +273,7 @@ public final class TSP {
             sum = 0;
             
             String currentWorkingDirectory = Paths.get(".").toAbsolutePath().normalize().toString();
-            originalCities = cities = LoadCitiesFromFile(currentWorkingDirectory+"/"+"CityList.txt", cities);
+            originalCities = cities = LoadCitiesFromFile(currentWorkingDirectory+"/"+"data/CityList.txt", cities);
          
             writeLog("Run Stats for experiment at: " + currentTime);
             for (int y = 1; y <= runs; y++) {
@@ -297,8 +291,8 @@ public final class TSP {
             
                while (generation < 100) {
                   evolve();
-                  if(generation % 5 == 0 ) 
-                     cities = MoveCities(originalCities); //Move from original cities, so they only move by a maximum of one unit.
+//                  if(generation % 5 == 0 ) 
+//                     cities = MoveCities(originalCities); //Move from original cities, so they only move by a maximum of one unit.
                   generation++;
                
                   Chromosome.sortChromosomes(chromosomes, populationSize);
