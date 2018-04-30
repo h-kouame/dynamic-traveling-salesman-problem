@@ -1,9 +1,12 @@
 SRCDIR = src
 BINDIR = bin
+LIB = lib
+
+GUAVA = $(LIB)/com.google.guava_1.6.0.jar
 
 JC = javac
 J = java
-JFLAGS = -g -d $(BINDIR) -cp $(BINDIR)
+JFLAGS = -g -d $(BINDIR) -cp $(BINDIR):$(GUAVA)
 
 .SUFFIXES: .java .class
 .java.class:
@@ -17,16 +20,16 @@ CLASSES = \
 
 default: classes
 
-TSP.class: TSP.java Evolution.java Chromosome.class City.class
+TSP.class: TSP.java Evolution.class Chromosome.class City.class
 Evolution.class: Evolution.java Chromosome.class City.class
 Chromosome: Chromosome.java City.class
 City.class: City.java
 
 run:
-	$(J) -cp $(BINDIR) TSP 100
+	$(J) -ea -cp $(BINDIR):$(GUAVA) TSP 100
 
 gui:
-	$(J) -cp $(BINDIR) TSP 100 y
+	$(J) -ea -cp $(BINDIR):$(GUAVA) TSP 100 y
 	
 classes: $(CLASSES:.java=.class)
 	
