@@ -65,7 +65,7 @@ class Evolution{
 	  int populationSize = population.length;
 	  int newPopulationSize = populationSize/2;
       Chromosome [] newPopulation = new Chromosome[newPopulationSize];
-      int [] indexes = GenerateRandomIndexes(populationSize);
+      int [] indexes = GenerateRandomIndexes(populationSize, populationSize);
       for (int i = 0; i < newPopulationSize; ++i){
     	  Chromosome contestant1 = population[indexes[i]];
     	  Chromosome contestant2 = population[indexes[populationSize - i - 1]];
@@ -74,11 +74,11 @@ class Evolution{
       return newPopulation;
 	}
 	
-	private static int [] GenerateRandomIndexes(int number){
+	private static int [] GenerateRandomIndexes(int number, int maxNum){
 	    Random randomGenerator = new Random();
 	    int [] values = new int[number];
 	    for (int i = 0; i < number; ++i){
-	      values[i] = randomGenerator.nextInt(TSP.populationSize);  
+	      values[i] = randomGenerator.nextInt(maxNum);  
 	    }
 	    return values;
 	}
