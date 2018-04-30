@@ -5,6 +5,7 @@ import com.google.common.primitives.Ints;
 class Evolution{
 	
 	protected static int mutationProb = 30;
+	protected static int tournamentSize = 10;
 	
 	/**
 	 * Evolve given population to produce the next generation.
@@ -13,7 +14,7 @@ class Evolution{
 	 * @return The new generation of individuals.
 	 */
    public static Chromosome [] Evolve(Chromosome [] population, City [] cityList){
-      Chromosome [] parents = SelectParents(population);
+      Chromosome [] parents = SelectParents(population, tournamentSize);
       Chromosome [] newPopulation = new Chromosome [population.length];
       Chromosome parent1, parent2;
 	  for (int i = 0; i < population.length; i +=2){
@@ -26,16 +27,19 @@ class Evolution{
       return newPopulation;
    }
    
-	public static Chromosome [] SelectParents(Chromosome [] population) {
+	public static Chromosome [] SelectParents(Chromosome [] population, int tournamentSize) {
 	  int populationSize = population.length;
 	  int newPopulationSize = populationSize/2;
       Chromosome [] newPopulation = new Chromosome[newPopulationSize];
-      int [] indexes = GenerateRandomIndexes(populationSize, populationSize);
-      Chromosome contestant1, contestant2;     
+//      int [] indexes = GenerateRandomIndexes(populationSize, populationSize);
+      Chromosome [] contestants = new Chromosome[tournamentSize];  
+      int [] indexes;
       for (int i = 0; i < newPopulationSize; ++i){
-    	  contestant1 = population[indexes[i]];
-    	  contestant2 = population[indexes[populationSize - i - 1]];
-    	  newPopulation[i] = Compete(contestant1, contestant2);
+    	  indexes = GenerateRandomIndexes(tournamentSize, populationSize);
+    	  for(int j = 0; j < tournamentSize; ++j) {
+    		  contestants[j] = population[indexes[j]];
+    	  }
+    	  newPopulation[i] = Compete(contestants);
       }  
       return newPopulation;
 	}
@@ -50,8 +54,9 @@ class Evolution{
 	}
 	
 	
-	public static Chromosome Compete(Chromosome contestant1, Chromosome contestant2){
-		return contestant1.cost < contestant2.cost ? contestant1 : contestant2;
+	public static Chromosome Compete(Chromosome [] contestants){
+		Chromosome.sortChromosomes(contestants, contestants.length);
+		return contestants[0];
 	}
 	
 	
@@ -307,9 +312,9 @@ class Evolution{
 		return (index - 1 + numberOfCities) % numberOfCities;
 	}
 	
-	private static boolean IsMutation() {
-	    Random randomGenerator = new Random();
-	    return randomGenerator.nextInt(100) < mutationProb ? true : false; 
-	}
+//	private static boolean IsMutation() {
+//	    Random randomGenerator = new Random();
+//	    return randomGenerator.nextInt(100) < mutationProb ? true : false; 
+//	}
 
 }
