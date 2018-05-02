@@ -3,9 +3,7 @@ import java.util.Random;
 import com.google.common.primitives.Ints;
 
 class Evolution{
-	
-	protected static int mutationProb = 30;
-	protected static int tournamentSize = 10;
+	protected static int tournamentSize = 8;
 	
 	/**
 	 * Evolve given population to produce the next generation.
@@ -293,16 +291,16 @@ class Evolution{
 	 * @param cityList list of cities, needed to instantiate the new Chromosome.
 	 * @return Chromosome resuling from breeding parent.
 	 */
-	public static Chromosome Breed(Chromosome parent1, Chromosome parent2, City [] cityList){
-      int [] cityIndexes = parent1.getCities();
-      City [] newCities = new City[cityIndexes.length];
-      
-      for (int i = 0; i<cityIndexes.length; ++i){
-         newCities[i] = cityList[cityIndexes[i]];
-      }
-      
-      return new Chromosome(newCities);
-   }	
+//	public static Chromosome Breed(Chromosome parent1, Chromosome parent2, City [] cityList){
+//      int [] cityIndexes = parent1.getCities();
+//      City [] newCities = new City[cityIndexes.length];
+//      
+//      for (int i = 0; i<cityIndexes.length; ++i){
+//         newCities[i] = cityList[cityIndexes[i]];
+//      }
+//      
+//      return new Chromosome(newCities);
+//   }	
 	
 	private static int nextIndex(int index, int numberOfCities) {
 		return (index + 1) % numberOfCities;

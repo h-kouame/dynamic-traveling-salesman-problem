@@ -1,6 +1,7 @@
 SRCDIR = src
 BINDIR = bin
 LIB = lib
+OUTDIR = output
 
 GUAVA = $(LIB)/com.google.guava_1.6.0.jar
 
@@ -34,4 +35,4 @@ gui:
 classes: $(CLASSES:.java=.class)
 	
 clean:
-	$(RM) $(BINDIR)/*.class
+	$(RM) $(OUTDIR)/results.out $(BINDIR)/*.class
