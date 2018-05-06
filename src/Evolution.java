@@ -18,7 +18,6 @@ class Evolution{
 	  for (int i = 0; i < population.length; i +=2){
 		  parent1 = parents[i/2];
 		  parent2 = parents[parents.length - i/2 - 1];
-//		  Call CrossoverRight before CrossoverLeft to because in CrossoverLeft one of the parent is modified
 		  newPopulation[i] = CrossoverRight(parent1, parent2, cityList);
 		  newPopulation[i + 1] = CrossoverLeft(parent1, parent2, cityList);
       }
@@ -29,7 +28,6 @@ class Evolution{
 	  int populationSize = population.length;
 	  int newPopulationSize = populationSize/2;
       Chromosome [] newPopulation = new Chromosome[newPopulationSize];
-//      int [] indexes = GenerateRandomIndexes(populationSize, populationSize);
       Chromosome [] contestants = new Chromosome[tournamentSize];  
       int [] indexes;
       for (int i = 0; i < newPopulationSize; ++i){
@@ -73,7 +71,7 @@ class Evolution{
 // 	    Start with the randomly chosen city
  	    newCityList[0] = city;
  	    usedCities[0] = city;
- 	    for(int i = 1; i < numberOfCities; ++i) {
+ 	    for(int i = 1; i < numberOfCities; ++i) { 
  	    	int nextIndex1 = nextIndex(currentIndex1, numberOfCities);
  	    	while (Ints.contains(usedCities, parent1CityIndexes[nextIndex1])) {
  	    		nextIndex1 = nextIndex(nextIndex1, numberOfCities);
@@ -138,9 +136,7 @@ class Evolution{
  	    	}
  	    }
 
- 	    Chromosome offspring = new Chromosome(cityList);
- 	    offspring.setCities(newCityList);
- 	    offspring.calculateCost(cityList);
+ 	    Chromosome offspring = new Chromosome(newCityList, cityList);
         return offspring;
 	}
 	
@@ -224,9 +220,7 @@ class Evolution{
  	    			
  	    	}
  	    }
- 	    Chromosome offspring = new Chromosome(cityList);
- 	    offspring.setCities(newCityList);
- 	    offspring.calculateCost(cityList);
+ 	    Chromosome offspring = new Chromosome(newCityList, cityList);
         return offspring;
 	}
 	
@@ -249,40 +243,6 @@ class Evolution{
       parent.calculateCost(cities);
       return parent;
     }
-	
-	public static Chromosome ShiftRight(Chromosome original, City [] cityList){
-	  int [] cityIndexes = original.getCities();
-	  City [] newCities = new City[cityIndexes.length];
-	  
-	  for (int i = 0; i<cityIndexes.length - 1; ++i){
-	     newCities[i + 1] = cityList[cityIndexes[i]];
-	  }
-	  newCities[0] = cityList[cityIndexes[cityIndexes.length - 1]];
-	  return new Chromosome(newCities);
-	}
-	
-	public static Chromosome ShiftLeft(Chromosome original, City [] cityList){
-	  int [] cityIndexes = original.getCities();
-	  City [] newCities = new City[cityIndexes.length];
-	  
-	  for (int i = 1; i<cityIndexes.length; ++i){
-	     newCities[i - 1] = cityList[cityIndexes[i]];
-	  }
-	  newCities[cityIndexes.length - 1] = cityList[cityIndexes[0]];
-	  return new Chromosome(newCities);
-	}
-	
-	public static Chromosome Swap(Chromosome original, City [] cityList){
-	  int [] cityIndexes = original.getCities();
-	  City [] newCities = new City[cityIndexes.length];
-	  
-	  for (int i = 0; i<cityIndexes.length; i += 2){
-		  City temp = cityList[cityIndexes[i]];
-	     newCities[i] = cityList[cityIndexes[i + 1]];
-	     newCities[i + 1] = temp;
-	  }
-	  return new Chromosome(newCities);
-	}
 	
 	/**
 	 * Breed two chromosomes to create a offspring

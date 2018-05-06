@@ -1,4 +1,3 @@
-import java.util.Random;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -7,7 +6,7 @@ final class Chromosome {
     /**
      * The list of cities, which are the genes of this chromosome.
      */
-    protected int[] cityList;
+    protected int[] cityIndexes;
 
     /**
      * The cost of following the cityList order of this chromosome.
@@ -15,7 +14,7 @@ final class Chromosome {
     protected double cost;
     
     /**
-     * Stores extra data about Chromosome needed for advanced mutations
+     * Stores extra data about Chromosome needed for advaned mutations
      * and crossovers
      */
     protected HashMap<String, Object> metaData = new HashMap<>();
@@ -42,22 +41,9 @@ final class Chromosome {
     /**
      * @param cities The order that this chromosome would visit the cities.
      */
-    Chromosome(City[] cities) {
-        Random generator = new Random();
-        cityList = new int[cities.length];
-        //cities are visited based on the order of an integer representation [o,n] of each of the n cities.
-        for (int x = 0; x < cities.length; x++) {
-            cityList[x] = x;
-        }
-
-        //shuffle the order so we have a random initial order
-        for (int y = 0; y < cityList.length; y++) {
-            int temp = cityList[y];
-            int randomNum = generator.nextInt(cityList.length);
-            cityList[y] = cityList[randomNum];
-            cityList[randomNum] = temp;
-        }
-
+    Chromosome(int[] cityIndexes, City [] cities) {
+    	this.cityIndexes = Arrays.copyOf(cityIndexes, cityIndexes.length);
+        
         calculateCost(cities);
     }
 
@@ -68,12 +54,12 @@ final class Chromosome {
      */
     void calculateCost(City[] cities) {
         cost = 0;
-        for (int i = 0; i < cityList.length - 1; i++) {
-            double dist = cities[cityList[i]].proximity(cities[cityList[i + 1]]);
+        for (int i = 0; i < cityIndexes.length - 1; i++) {
+            double dist = cities[cityIndexes[i]].proximity(cities[cityIndexes[i + 1]]);
             cost += dist;
         }
 
-        cost += cities[cityList[0]].proximity(cities[cityList[cityList.length - 1]]); //Adding return home
+        cost += cities[cityIndexes[0]].proximity(cities[cityIndexes[cityIndexes.length - 1]]); //Adding return home
         incrementNumberOfPathLengthCalculations();
         
     }
@@ -91,7 +77,7 @@ final class Chromosome {
      * @return The ith city.
      */
     int getCity(int i) {
-        return cityList[i];
+        return cityIndexes[i];
     }
 
     /**
@@ -100,8 +86,8 @@ final class Chromosome {
      * @param list A list of cities.
      */
     void setCities(int[] list) {
-        for (int i = 0; i < cityList.length; i++) {
-            cityList[i] = list[i];
+        for (int i = 0; i < cityIndexes.length; i++) {
+            cityIndexes[i] = list[i];
         }
     }
     
@@ -109,7 +95,7 @@ final class Chromosome {
      * Get the order of cities that this chromosome would visit.
      */
     public int [] getCities() {
-        return Arrays.copyOfRange(cityList, 0, cityList.length);
+        return Arrays.copyOfRange(cityIndexes, 0, cityIndexes.length);
     }
 
     /**
@@ -119,7 +105,7 @@ final class Chromosome {
      * @param value The city number to place into the index.
      */
     void setCity(int index, int value) {
-        cityList[index] = value;
+        cityIndexes[index] = value;
     }
 
     /**
@@ -150,6 +136,22 @@ final class Chromosome {
      */
 	public HashMap<String, Object> getMetaData() {
 		return metaData;
-	}  
+	}
+
+	public static Chromosome RandomChromosome(City [] cities) {
+		int [] cityIndexes = new int[cities.length];
+		
+		for (int i = 0; i<cityIndexes.length; ++i) {
+			cityIndexes[i] = i;
+		}
+		
+		cityIndexes = ShuffleUtils.ShuffleArray(cityIndexes);
+		
+		return new Chromosome(cityIndexes, cities);
+	}
+
+	
+    
+    
     
 }

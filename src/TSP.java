@@ -1,13 +1,23 @@
-import java.awt.*;
-import java.io.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Panel;
+import java.awt.TextArea;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Paths;
-import java.text.*;
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
-import java.util.ArrayList;
 
-import javax.swing.*;
+import javax.swing.JFrame;
 
 public final class TSP {
 
@@ -24,7 +34,7 @@ public final class TSP {
    protected static int populationSize = 100; //DO NOT CHANGE THIS.
 
    /**
-    * The part of the population eligible for mating.
+    * The part of the population eligable for mating.
     */
    protected static int matingPopulationSize;
 
@@ -117,7 +127,6 @@ public final class TSP {
    public static void updateGUI() {
       Image img = frame.createImage(width, height);
       Graphics g = img.getGraphics();
-     // FontMetrics fm = g.getFontMetrics();
    
       g.setColor(Color.black);
       g.fillRect(0, 0, width, height);
@@ -217,7 +226,7 @@ public final class TSP {
       return newPositions;
    }
 
-   public static void main(String[] args) {
+   public static void main(String[] args) throws Exception {
       /*
           Enable assertions
        */
@@ -251,6 +260,7 @@ public final class TSP {
             if(display) {
                frame = new JFrame("Traveling Salesman");
                statsArea = new Panel();
+            
                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                frame.pack();
                frame.setSize(width + 300, height);
@@ -283,7 +293,7 @@ public final class TSP {
             // create the initial population of chromosomes
                chromosomes = new Chromosome[populationSize];
                for (int x = 0; x < populationSize; x++) {
-                  chromosomes[x] = new Chromosome(cities);
+                  chromosomes[x] = Chromosome.RandomChromosome(cities);
                }
             
                generation = 0;
@@ -340,7 +350,9 @@ public final class TSP {
             /*
                We expect to calculate the path length (populationSize*(runs+1)*100) times since there is 100 generations, 100 individuals and we have to calculate the path lengths for the initial pop and then for every run, therefore (runs+1)
             */
-            assert (Chromosome.getNumberOfPathLengthCalculations() <= populationSize*(runs+1)*100*2) : "You calculated the TSP tour length too many times. You can only call Chromosome.calculateCost() populationSize*runs*2 times at most. Note that Chromosome.calculateCost() is called in the Chromosome constructor too. You calculated the path cost "+(Chromosome.getNumberOfPathLengthCalculations())+" times when you can only call it up to "+(populationSize*(runs+1)*100*2)+" times.";
+            if (Chromosome.getNumberOfPathLengthCalculations() > populationSize*(runs+1)*100) {
+            	throw new Exception("You calculated the TSP tour length too many times. You can only call Chromosome.calculateCost() populationSize*(runs+1)*2 times at most. Note that Chromosome.calculateCost() is called in the Chromosome constructor too. You calculated the path cost "+(Chromosome.getNumberOfPathLengthCalculations())+" times when you can only call it up to "+(populationSize*(runs+1)*100)+" times.");
+            }
          
                         
          } 
