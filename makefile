@@ -15,17 +15,13 @@ JFLAGS = -g -d $(BINDIR) -cp $(BINDIR):$(GUAVA)
 
 CLASSES = \
         $(SRCDIR)/City.java \
-		$(SRCDIR)/ShuffleUtils.java \
         $(SRCDIR)/Chromosome.java \
-        $(SRCDIR)/Evolution.java \
         $(SRCDIR)/TSP.java 
 
 default: classes
 
-TSP.class: TSP.java Evolution.class Chromosome.class City.class
-Evolution.class: Evolution.java Chromosome.class City.class
-Chromosome: Chromosome.java ShuffleUtils.class City.class
-ShuffleUtils.class: ShuffleUtils.java
+TSP.class: TSP.java Chromosome.class City.class
+Chromosome: Chromosome.java City.class
 City.class: City.java
 
 run:
