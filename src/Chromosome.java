@@ -1,8 +1,6 @@
 import java.util.Random;
-import java.util.Arrays;
-import java.util.HashMap;
 
-final class Chromosome {
+class Chromosome {
 
     /**
      * The list of cities, which are the genes of this chromosome.
@@ -13,31 +11,6 @@ final class Chromosome {
      * The cost of following the cityList order of this chromosome.
      */
     protected double cost;
-    
-    /**
-     * Stores extra data about Chromosome needed for advanced mutations
-     * and crossovers
-     */
-    protected HashMap<String, Object> metaData = new HashMap<>();
-    
-    /**
-     * The number of times calculateCost() is called
-     */
-     protected static int numberOfPathLengthCalculations = 0;
-     
-     /**
-     * Returns how many times the length of a TSP tour was calculated.
-     */
-    public static int getNumberOfPathLengthCalculations(){   
-      return numberOfPathLengthCalculations;
-    }
-    
-    /**
-     * Increments how many times the length of a TSP tour was calculated.
-     */
-    public static void incrementNumberOfPathLengthCalculations(){   
-         ++numberOfPathLengthCalculations;
-    }
 
     /**
      * @param cities The order that this chromosome would visit the cities.
@@ -74,8 +47,6 @@ final class Chromosome {
         }
 
         cost += cities[cityList[0]].proximity(cities[cityList[cityList.length - 1]]); //Adding return home
-        incrementNumberOfPathLengthCalculations();
-        
     }
 
     /**
@@ -103,13 +74,6 @@ final class Chromosome {
         for (int i = 0; i < cityList.length; i++) {
             cityList[i] = list[i];
         }
-    }
-    
-    /**
-     * Get the order of cities that this chromosome would visit.
-     */
-    public int [] getCities() {
-        return Arrays.copyOfRange(cityList, 0, cityList.length);
     }
 
     /**
@@ -143,13 +107,4 @@ final class Chromosome {
             }
         }
     }
-
-    /**
-     * Gets data in metaData HashMap
-     * @return MetaData of Chromosome
-     */
-	public HashMap<String, Object> getMetaData() {
-		return metaData;
-	}  
-    
 }
