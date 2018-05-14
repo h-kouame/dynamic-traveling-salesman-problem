@@ -11,7 +11,7 @@ import javax.swing.*;
 
 public class TSP {
 	
-	protected static int tournamentSize = 8;
+	protected static int tournamentSize = 20;
 
 	private static final int cityShiftAmount = 60; //DO NOT CHANGE THIS.
 	
@@ -116,17 +116,57 @@ public class TSP {
 	 * @return The new generation of individuals.
 	 */
    public static void evolve(){
-	      Chromosome [] parents = SelectParents(chromosomes, tournamentSize);
-	      Chromosome [] newPopulation = new Chromosome [populationSize];
-	      Chromosome parent1, parent2;
-		  for (int i = 0; i < populationSize; i +=2){
-			  parent1 = parents[i/2];
-			  parent2 = parents[parents.length - i/2 - 1];
+//	  if (generation == 0) GenerateHeuristicRoutes();
+      Chromosome [] parents = SelectParents(chromosomes, tournamentSize);
+      Chromosome [] newPopulation = new Chromosome [populationSize];
+      Chromosome parent1, parent2;
+	  for (int i = 0; i < populationSize; i +=2){
+		  parent1 = parents[i/2];
+		  parent2 = parents[parents.length - i/2 - 1];
 //			  Call CrossoverRight before CrossoverLeft to because in CrossoverLeft one of the parent is modified
-			  newPopulation[i] = CrossoverRight(parent1, parent2);
-			  newPopulation[i + 1] = CrossoverLeft(parent1, parent2);
-	      }
-	      chromosomes = newPopulation;
+		  newPopulation[i] = CrossoverRight(parent1, parent2);
+		  newPopulation[i + 1] = CrossoverLeft(parent1, parent2);
+      }
+      chromosomes = newPopulation;
+   }
+   
+   public static void GenerateHeuristicRoutes() {
+	   int [] randomStarts = GenerateRandomIndexes(populationSize, cityCount);
+	   int currentIndex;
+	   for (int i = 0; i < populationSize; ++i){   
+		    Chromosome chromosome = chromosomes[i];
+		    int [] cityList = chromosome.cityList;
+		   	currentIndex = randomStarts[i];
+		   	int [] newCityList = new int[cityCount];
+		   	Arrays.fill(newCityList, -1);
+		   	newCityList[0] = cityList[currentIndex];
+		   	int rightIndex = 0;
+		   	int leftIndex = 0;
+		   	for (int j = 1; j < cityCount; ++j ) {
+		    	do {
+		    		rightIndex = nextIndex(rightIndex, cityCount);
+		    	} while (Ints.contains(newCityList, cityList[rightIndex]));
+		    	
+		    	do {
+		    		leftIndex = previousIndex(leftIndex, cityCount);
+		    	} while (Ints.contains(newCityList, cityList[leftIndex]));
+		    	City currentCity = cities[cityList[currentIndex]];
+		    	City rightCity = cities[cityList[rightIndex]];
+		    	City leftCity = cities[cityList[leftIndex]];
+		    	if (currentCity.proximity(rightCity) < currentCity.proximity(leftCity)) {
+		    		newCityList[j] =  cityList[rightIndex];
+		    		currentIndex = rightIndex;
+		    	}
+		    	else {
+		    		newCityList[j] =  cityList[leftIndex];
+		    		currentIndex = leftIndex;
+		    	}	
+		   	}
+		   	
+		   	chromosome.setCities(newCityList);
+		   	chromosome.calculateCost(cities);		   	
+	   }
+	   return;
    }
    
 	public static Chromosome [] SelectParents(Chromosome [] population, int tournamentSize) {
@@ -189,34 +229,17 @@ public class TSP {
 	    	
 	    	if(parent1CityIndexes[nextIndex1] == parent2CityIndexes[nextIndex2]) {
 	// 	    		common right node
+//	    			System.out.println("common right");	
 	 	    		city = parent1CityIndexes[nextIndex1];
 	 	    		newCityList[i] = city;
 	 	    		usedCities[i] = city;
 	 	    		currentIndex1 = nextIndex1;
 	 	    		currentIndex2 = nextIndex2;
 	 	    		continue;
-	 		   	}
-	 
-	 	    	int previousIndex1 = previousIndex(currentIndex1, numberOfCities);
-	 	    	while (Ints.contains(usedCities, parent1CityIndexes[previousIndex1])) {
-	 	    		previousIndex1 = previousIndex(previousIndex1, numberOfCities);
-	 	    	}
-	 	    	int previousIndex2 = nextIndex(currentIndex2, numberOfCities);
-	 	    	while (Ints.contains(usedCities, parent2CityIndexes[previousIndex2])) {
-	 	    		previousIndex2 = nextIndex(previousIndex2, numberOfCities);
-	 	    	}
-	 	    	
-	 	 	    if(parent1CityIndexes[previousIndex1] == parent2CityIndexes[previousIndex2]) {
-	// 	 	    	Common left node
-	      		city = parent1CityIndexes[previousIndex1];
-	    		newCityList[i] = city;
-	    		usedCities[i] = city;
-	    		currentIndex1 = previousIndex1;
-	    		currentIndex2 = previousIndex2;
-	    		continue;
-		   	}
+	 		   }	 
 	 	    
-	// 	 	    Take closest right city
+// 	 	    Take closest right city
+//	 	 	System.out.println("closest right");	
 	 	    City contestant1;
 	 	    City contestant2;	
 	    	contestant1 = cities[parent1CityIndexes[nextIndex1]]; 
@@ -237,8 +260,7 @@ public class TSP {
 	    		newCityList[i] = city;
 	    		usedCities[i] = city;
 	    		currentIndex2 = nextIndex2;
-	    		currentIndex1 = Ints.indexOf(parent1CityIndexes, currentIndex2);
-	    			
+	    		currentIndex1 = Ints.indexOf(parent1CityIndexes, currentIndex2);    			
 	    	}
 	    }
  	    Chromosome offspring = new Chromosome(cities);
@@ -264,25 +286,6 @@ public class TSP {
  	    newCityList[0] = city;
  	    usedCities[0] = city;
  	    for(int i = 1; i < numberOfCities; ++i) {
- 	    	int nextIndex1 = nextIndex(currentIndex1, numberOfCities);
- 	    	while (Ints.contains(usedCities, parent1CityIndexes[nextIndex1])) {
- 	    		nextIndex1 = nextIndex(nextIndex1, numberOfCities);
- 	    	} 	    	
- 	    	int nextIndex2 = nextIndex(currentIndex2, numberOfCities);
- 	    	while (Ints.contains(usedCities, parent2CityIndexes[nextIndex2])) {
- 	    		nextIndex2 = nextIndex(nextIndex2, numberOfCities);
- 	    	}
- 	    	
- 	    	if(parent1CityIndexes[nextIndex1] == parent2CityIndexes[nextIndex2]) {
-// 	    		common right node
- 	    		city = parent1CityIndexes[nextIndex1];
- 	    		newCityList[i] = city;
- 	    		usedCities[i] = city;
- 	    		currentIndex1 = nextIndex1;
- 	    		currentIndex2 = nextIndex2;
- 	    		continue;
- 		   	}
- 
  	    	int previousIndex1 = previousIndex(currentIndex1, numberOfCities);
  	    	while (Ints.contains(usedCities, parent1CityIndexes[previousIndex1])) {
  	    		previousIndex1 = previousIndex(previousIndex1, numberOfCities);
@@ -323,8 +326,7 @@ public class TSP {
  	    		newCityList[i] = city;
  	    		usedCities[i] = city;
  	    		currentIndex2 = previousIndex2;
- 	    		currentIndex1 = Ints.indexOf(parent1CityIndexes, currentIndex2);
- 	    			
+ 	    		currentIndex1 = Ints.indexOf(parent1CityIndexes, currentIndex2);		
  	    	}
  	    }
  	    Chromosome offspring = new Chromosome(cities);
@@ -597,7 +599,7 @@ public class TSP {
                 print(display, "Solution found after " + generation + " generations." + "\n");
                 print(display, "Statistics of minimum cost from each run \n");
                 print(display, "Lowest: " + min + "\nAverage: " + avg + "\nHighest: " + max + "\n");
-
+                print(display, "Fittness grade: " + 60 * (1 - (avg - 2868)/2868.0) );
             } catch (NumberFormatException e) {
                 System.out.println("Please ensure you enter integers for cities and population size");
                 System.out.println(formatMessage);
