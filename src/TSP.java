@@ -11,7 +11,8 @@ import javax.swing.*;
 
 public class TSP {
 	
-	protected static int tournamentSize = 20;
+	private static int tournamentSize = 20;
+	private static int DOUBLE_CROSSOVER = 0;
 
 	private static final int cityShiftAmount = 60; //DO NOT CHANGE THIS.
 	
@@ -123,9 +124,14 @@ public class TSP {
 	  for (int i = 0; i < populationSize; i +=2){
 		  parent1 = parents[i/2];
 		  parent2 = parents[parents.length - i/2 - 1];
-//			  Call CrossoverRight before CrossoverLeft to because in CrossoverLeft one of the parent is modified
 		  newPopulation[i] = CrossoverRight(parent1, parent2);
 		  newPopulation[i + 1] = CrossoverLeft(parent1, parent2);
+		  if(generation >= DOUBLE_CROSSOVER) {
+			  parent1 = newPopulation[i + 1];
+			  newPopulation[i] = CrossoverRight(newPopulation[i], parent1);
+			  newPopulation[i + 1] = CrossoverLeft(newPopulation[i + 1], parent1);
+		  }
+		  
       }
       chromosomes = newPopulation;
    }
@@ -140,8 +146,9 @@ public class TSP {
 		   	int [] newCityList = new int[cityCount];
 		   	Arrays.fill(newCityList, -1);
 		   	newCityList[0] = cityList[currentIndex];
-		   	int rightIndex = 0;
-		   	int leftIndex = 0;
+		   	Random randomGenerator = new Random();
+		   	int rightIndex = randomGenerator.nextInt(cityCount);
+		   	int leftIndex = randomGenerator.nextInt(cityCount);
 		   	for (int j = 1; j < cityCount; ++j ) {
 		    	do {
 		    		rightIndex = nextIndex(rightIndex, cityCount);
@@ -164,10 +171,10 @@ public class TSP {
 		   	}
 		   	
 		   	chromosome.setCities(newCityList);
-		   	chromosome.calculateCost(cities);		   	
+		   	chromosome.calculateCost(cities);
 	   }
-	   return;
-   }
+   }   
+   
    
 	public static Chromosome [] SelectParents(Chromosome [] population, int tournamentSize) {
 		  int populationSize = population.length;
