@@ -125,11 +125,17 @@ public class TSP {
 		  parent1 = parents[i/2];
 		  parent2 = parents[parents.length - i/2 - 1];
 		  newPopulation[i] = CrossoverRight(parent1, parent2);
-		  newPopulation[i + 1] = CrossoverLeft(parent1, parent2);
+		  if (parent1.cost < parent2.cost)
+			  newPopulation[i + 1] = CrossoverLeft(newPopulation[i], parent1); 
+		  else
+			  newPopulation[i + 1] = CrossoverLeft(newPopulation[i], parent2);
 		  if(generation >= DOUBLE_CROSSOVER) {
-			  parent1 = newPopulation[i + 1];
-			  newPopulation[i] = CrossoverRight(newPopulation[i], parent1);
-			  newPopulation[i + 1] = CrossoverLeft(newPopulation[i + 1], parent1);
+			  parent1 = newPopulation[i];
+			  newPopulation[i] = CrossoverRight(newPopulation[i], newPopulation[i + 1]);
+			  if(parent1.cost < newPopulation[i + 1].cost)
+				  newPopulation[i + 1] = CrossoverLeft(newPopulation[i], parent1);
+			  else
+				  newPopulation[i + 1] = CrossoverLeft(newPopulation[i], newPopulation[i + 1]);
 		  }
 		  
       }
@@ -606,7 +612,7 @@ public class TSP {
                 print(display, "Solution found after " + generation + " generations." + "\n");
                 print(display, "Statistics of minimum cost from each run \n");
                 print(display, "Lowest: " + min + "\nAverage: " + avg + "\nHighest: " + max + "\n");
-                print(display, "Fittness grade: " + 60 * (1 - (avg - 2868)/2868.0) );
+                print(display, "Fitness grade: " + 60 * 2868.0/avg );
             } catch (NumberFormatException e) {
                 System.out.println("Please ensure you enter integers for cities and population size");
                 System.out.println(formatMessage);
