@@ -2,8 +2,8 @@ from scipy import stats
 
 alpha = 0.05
 data1 = []
-with open('../output/results.out') as f:
-#with open('results.out') as f:
+#with open('../output/results.out') as f:
+with open('results.out') as f:
     f.readline()
     while(f.readline()):
         line = f.readline()
@@ -36,7 +36,7 @@ print
 print "---T-test---"
 print "t-value: ", t
 print "p-value: ", p
-if p2 < alpha: # null hypothesis: data comes from a normal distribution
-    print("Data 1 and 2 are NOT statistically different")
+if p < alpha: # null hypothesis: No statistical difference
+    print("Data 1 and 2 ARE statistically significant different")
 else:
-    print("Data 1 and 2 are statistically different")
+    print("Data 1 and 2 are NOT statistically different")
